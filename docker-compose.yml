@@ -1,0 +1,75 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: rcf-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - backend
+
+  mysql:
+    image: mysql:8.0
+    container_name: rcf-mysql
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: homestead
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - backend
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rcf-php
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "9000:9000"
+    networks:
+      - backend
+
+  composer:
+    image: composer:latest
+    container_name: rcf-composer
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    networks:
+      - backend
+
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rcf-artisan
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - backend
