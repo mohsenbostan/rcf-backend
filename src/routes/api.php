@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1/')->group(function () {
+
+    // Authentication Routes
+    Route::prefix('/auth')->group(function () {
+        Route::post('/register', 'API\V01\Auth\AuthController@register')->name('auth.register');
+        Route::post('/login', 'API\V01\Auth\AuthController@login')->name('auth.login');
+        Route::get('/user', 'API\V01\Auth\AuthController@user')->name('auth.user');
+        Route::post('/logout', 'API\V01\Auth\AuthController@logout')->name('auth.logout');
+    });
+
 });
