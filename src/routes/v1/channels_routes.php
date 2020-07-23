@@ -9,7 +9,7 @@ Route::prefix('/channel')->group(function () {
         'getAllChannelsList'
     ])->name('channel.all');
 
-    Route::middleware('channel management')->group(function () {
+    Route::middleware(['can:channel management', 'auth:sanctum'])->group(function () {
         Route::post('/create', [
             ChannelController::class,
             'createNewChannel'
