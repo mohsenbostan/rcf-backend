@@ -3,11 +3,33 @@
 namespace Tests\Unit\API\v1\Channel;
 
 use App\Channel;
+use App\User;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class ChannelTest extends TestCase
 {
+
+    public function registerRolesAndPermissions()
+    {
+        $roleInDatabase = \Spatie\Permission\Models\Role::where('name', config('permission.default_roles')[0]);
+        if ($roleInDatabase->count() < 1) {
+            foreach (config('permission.default_roles') as $role) {
+                \Spatie\Permission\Models\Role::create([
+                    'name' => $role
+                ]);
+            }
+        }
+
+        $permissionInDatabase = \Spatie\Permission\Models\Permission::where('name', config('permission.default_permissions')[0]);
+        if ($permissionInDatabase->count() < 1) {
+            foreach (config('permission.default_permissions') as $permission) {
+                \Spatie\Permission\Models\Permission::create([
+                    'name' => $permission
+                ]);
+            }
+        }
+    }
 
     /**
      * Test All Channels List Should Be Accessible
@@ -24,14 +46,24 @@ class ChannelTest extends TestCase
      */
     public function test_create_channel_should_be_validated()
     {
-        $response = $this->postJson(route('channel.create'), []);
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
+        $response = $this->actingAs($user)->postJson(route('channel.create'), []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_create_new_channel()
     {
-        $response = $this->postJson(route('channel.create'), [
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
+        $response = $this->actingAs($user)->postJson(route('channel.create'), [
             'name' => 'Laravel'
         ]);
 
@@ -43,17 +75,27 @@ class ChannelTest extends TestCase
      */
     public function test_channel_update_should_be_validated()
     {
-        $response = $this->json('PUT', route('channel.update'), []);
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
+        $response = $this->actingAs($user)->json('PUT', route('channel.update'), []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_channel_update()
     {
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
         $channel = factory(Channel::class)->create([
             'name' => 'Laravel'
         ]);
-        $response = $this->json('PUT', route('channel.update'), [
+        $response = $this->actingAs($user)->json('PUT', route('channel.update'), [
             'id' => $channel->id,
             'name' => 'Vuejs'
         ]);
@@ -69,15 +111,25 @@ class ChannelTest extends TestCase
      */
     public function test_channel_delete_should_be_validated()
     {
-        $response = $this->json('DELETE', route('channel.delete'), []);
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
+        $response = $this->actingAs($user)->json('DELETE', route('channel.delete'), []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function test_delete_channel()
     {
+        $this->registerRolesAndPermissions();
+
+        $user = factory(User::class)->create();
+        $user->givePermissionTo('channel management');
+
         $channel = factory(Channel::class)->create();
-        $response = $this->json('DELETE', route('channel.delete'), [
+        $response = $this->actingAs($user)->json('DELETE', route('channel.delete'), [
             'id' => $channel->id
         ]);
 
