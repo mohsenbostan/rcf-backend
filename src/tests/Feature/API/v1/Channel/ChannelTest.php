@@ -140,9 +140,8 @@ class ChannelTest extends TestCase
             'id' => $channel->id
         ]);
 
-	 $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK);
 
-	// check the deleted channel is not in database
-	$this->assertTrue(Channel::where('id' , $channel->id)->count() == 0);
+        $this->assertTrue(Channel::where('id', $channel->id)->count() === 0);
     }
 }
