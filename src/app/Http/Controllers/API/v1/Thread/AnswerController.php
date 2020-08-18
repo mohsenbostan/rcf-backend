@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\v1\Thread;
 use App\Answer;
 use App\Http\Controllers\Controller;
 use App\Repositories\AnswerRepository;
-use App\Thread;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
