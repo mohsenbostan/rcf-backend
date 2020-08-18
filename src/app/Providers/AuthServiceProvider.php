@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Answer;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -33,6 +34,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('user-thread', function (User $user, Thread $thread) {
             return $thread->user_id == $user->id;
+        });
+
+        Gate::define('user-answer', function (User $user, Answer $answer) {
+            return $answer->user_id == $user->id;
         });
     }
 }
