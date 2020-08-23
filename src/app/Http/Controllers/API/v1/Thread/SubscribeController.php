@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\v1;
+namespace App\Http\Controllers\API\v1\Thread;
 
 use App\Http\Controllers\Controller;
 use App\Subscribe;
