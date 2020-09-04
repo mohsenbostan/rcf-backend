@@ -51,6 +51,23 @@ class AnswerTest extends TestCase
     }
 
     /** @test */
+    function user_score_will_increase_by_submit_new_answer()
+    {
+        $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
+
+        $thread = factory(Thread::class)->create();
+        $response = $this->postJson(route('answers.store'), [
+            'content' => 'Foo',
+            'thread_id' => $thread->id
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $user->refresh();
+        $this->assertEquals(10, $user->score);
+    }
+
+    /** @test */
     function update_answer_should_be_validated()
     {
         $answer = factory(Answer::class)->create();

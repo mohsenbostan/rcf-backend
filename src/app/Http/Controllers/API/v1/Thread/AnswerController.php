@@ -33,6 +33,7 @@ class AnswerController extends Controller
             'thread_id' => 'required',
         ]);
 
+        // Insert Data Into DB
         resolve(AnswerRepository::class)->store($request);
 
         // Get List Of User Id Which Subscribed To A Thread Id
@@ -41,6 +42,11 @@ class AnswerController extends Controller
         $notifiable_users = resolve(UserRepository::class)->find($notifiable_users_id);
         // Send NewReplySubmitted Notification To Subscribed Users
         Notification::send($notifiable_users, new NewReplySubmitted(Thread::find($request->thread_id)));
+
+        // Increase User Score
+        if (Thread::find($request->input('thread_id'))->user_id !== auth()->id()) {
+            auth()->user()->increment('score', 10);
+        }
 
         return \response()->json([
             'message' => 'answer submitted successfully'
