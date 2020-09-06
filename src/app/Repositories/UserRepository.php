@@ -14,6 +14,7 @@ class UserRepository
     {
         return User::find($id);
     }
+
     /**
      * @param Request $request
      * @return User
@@ -25,5 +26,10 @@ class UserRepository
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+    }
+
+    public function leaderboards()
+    {
+        return User::query()->orderByDesc('score')->paginate(20);
     }
 }
