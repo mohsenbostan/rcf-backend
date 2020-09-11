@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SubscribeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['user-block']);
+    }
+
     public function subscribe(Thread $thread)
     {
         auth()->user()->subscribes()->create([
