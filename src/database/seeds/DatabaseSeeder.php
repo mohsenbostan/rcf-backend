@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        factory(\App\Thread::class, 100)->create();
     }
 }
