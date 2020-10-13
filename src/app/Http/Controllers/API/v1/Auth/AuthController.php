@@ -15,6 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth')->only('user');
+    }
+
     /**
      * Register New User
      * @method POST
@@ -72,6 +77,7 @@ class AuthController extends Controller
         $data = [
             Auth::user(),
             'notifications' => Auth::user()->unreadNotifications(),
+            'message' => 'successful'
         ];
         return response()->json($data , Response::HTTP_OK);
     }
