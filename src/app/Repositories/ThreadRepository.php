@@ -20,7 +20,7 @@ class ThreadRepository
 
     public function getThreadBySlug($slug)
     {
-        return Thread::whereSlug($slug)->whereFlag(1)->with(['channel', 'user'])->first();
+        return Thread::whereSlug($slug)->whereFlag(1)->with(['channel', 'user', 'answers'])->first();
     }
 
     public function store(Request $request)
