@@ -12,9 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ChannelController extends Controller
 {
+    protected $channel;
+
+    public function __construct()
+    {
+        $this->channel = resolve(ChannelRepository::class);
+    }
+
     public function getAllChannelsList()
     {
-        $all_channels = resolve(ChannelRepository::class)->all();
+        $all_channels = $this->channel->all();
         return response()->json($all_channels, Response::HTTP_OK);
     }
 
@@ -30,7 +37,7 @@ class ChannelController extends Controller
         ]);
 
         // Insert Channel To Database
-        resolve(ChannelRepository::class)->create($request->name);
+        $this->channel->create($request->name);
 
         return response()->json([
             'message' => 'channel created successfully'
@@ -49,7 +56,7 @@ class ChannelController extends Controller
         ]);
 
         // Update Channel In Database
-        resolve(ChannelRepository::class)->update($request->id, $request->name);
+        $this->channel->update($request->id, $request->name);
 
         return response()->json([
             'message' => 'channel edited successfully'
@@ -68,7 +75,7 @@ class ChannelController extends Controller
         ]);
 
         // Delete Channel In Database
-        resolve(ChannelRepository::class)->delete($request->id);
+        $this->channel->delete($request->id);
 
         return response()->json([
             'message' => 'channel deleted successfully'
